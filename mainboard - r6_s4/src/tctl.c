@@ -2,37 +2,12 @@
 #include "config.h"
 #include "queue.h"
 
-enum SYSTEM_STAT_TYPT = {
-    SYSTEM_AUTO_CTL = 1,
-    SYSTEM_SETTING,
-    SYSTEM_COOLING,
-    SYSTEM_HEATING,
-    SYSTEM_HANDLE,
-    SYSTEM_WARNING,
-    SYSTEM_POWEROFF,
-    SYSTEM_STAT_END,
-};
-enum SYSTEM_ERROR_TYPT = {
-    SYSTEM_ERROR_MANY_KEY_DOWN = 1,
-    SYSTEM_ERROR,
-    SYSTEM_ERROR_END,
-};
-enum EVENT_TPYE = {
-    EVENT_KEY_SET   = 1,  
-    EVENT_KEY_POWER,  
-    EVENT_KEY_UP   ,  
-    EVENT_KEY_DOWN ,  
-    EVENT_KEY_OPEN ,  
-    EVENT_KEY_CLOSE,  
-    EVENT_LIMIT_HEAT_ON,
-    EVENT_LIMIT_COOL_ON,
-    EVENT_TYPE_END,
-};
 
 static unsigned char system_stat_ ;    
 static unsigned int  system_time_ ; 
 static unsigned char system_time_flag_ ; 
 static unsigned char system_error_flag_ ; 
+static unsigned char limt_event_flag_; 
 static struct queue_type key_queue;
 static char chip_id_check[16]={0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
                                0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,};
@@ -125,7 +100,6 @@ void checkMCU()
   FCTL1 = FWKEY;                            // Clear WRT bit
   FCTL3 = FWKEY + LOCK;                     // Set LOCK bit
   if ((chip_id_check[0] == chip_id_check[1]) && (chip_id_check[1] == chip_id_check[2]))
-//  if (0)
   {
    // tmp = 10;
    // pwm_out(0);
@@ -179,11 +153,12 @@ void keyScan(void)
         if((~P1IN) & KEY_1_PIN_MAP[i]))
             bit_count++;
     }
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < 4; i++)
     {
         if((~P2IN) & KEY_2_PIN_MAP[i]))
             bit_count++;
     }
+    
     if (bit_count > 1)
     {
         setSystemErrorFlag(SYSTEM_ERROR_MANY_KEY_DOWN);    
@@ -228,6 +203,25 @@ void systemStatChange(unsigned char new_stat)
     return;
 }
 
+void coolingHandle(void)
+{
+    
+}
+void tempAutoCtlHandle(void)
+{
+
+}
+
+void systemInit(void )
+{
+    system_stat_ = 0;
+    system_time_ = 0;
+    system_time_flag_ = 0;
+    system_error_flag_ = 0;
+    limt_event_flag_ = 0;
+
+    return ;
+}
 
 
 void taskFor10ms(void)
@@ -251,17 +245,17 @@ int main()
    {
        if(GET_TIME_10MS_FLAG())
        {
-           task_for_10ms();
+           taskFor10ms(void)
            CLEAN_TIME_10MS_FLAG();
        }
        if(GET_TIME_100MS_FLAG())
        {
-           task_for_10ms();
+           taskFor100ms(void)
            CLEAN_TIME_100MS_FLAG();
        }
        if(GET_TIME_1000MS_FLAG())
        {
-           task_for_10ms();
+           taskFor1000ms(void)
            CLEAN_TIME_1000MS_FLAG();
        }
    }

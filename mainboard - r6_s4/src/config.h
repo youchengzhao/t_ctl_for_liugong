@@ -1,3 +1,15 @@
+/**
+  ******************************************************************************
+  * @file    temperature.h 
+  * @author  Danny Zhao 
+  * @version V2.0.0
+  * @date    05/29/2016
+  * @brief   
+  ******************************************************************************
+  **/
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
 #include "msp430g2553.h"
 #define KEY_1_PIN                   BIT4
 #define KEY_2_PIN                   BIT5
@@ -8,6 +20,8 @@
 
 #define XIAN_WEI_L_PIN                  BIT4
 #define XIAN_WEI_R_PIN                  BIT5
+#define LIMT_EVENT_COOL_ON              BIT0 
+#define LIMT_EVENT_HEAT_ON              BIT1 
 
 #define RELAY_CTL_PIN               BIT1
 
@@ -28,6 +42,32 @@
 #define   PWM_BIT                   BIT3
 
 #define UART_TBIT_DIV_2     (8000000 / (9600 * 2))
-#define UART_TBIT           (8000000 / 9600)
+#define UART_TBIT           (8000000 / 9600) 
+enum SYSTEM_STAT_TYPT = {
+    SYSTEM_AUTO_CTL = 1,
+    SYSTEM_SETTING,
+    SYSTEM_COOLING,
+    SYSTEM_HEATING,
+    SYSTEM_HANDLE,
+    SYSTEM_WARNING,
+    SYSTEM_POWEROFF,
+    SYSTEM_STAT_END,
+};
+enum SYSTEM_ERROR_TYPT = {
+    SYSTEM_ERROR_MANY_KEY_DOWN = 1,
+    SYSTEM_ERROR,
+    SYSTEM_ERROR_END,
+};
+enum EVENT_TPYE = {
+    EVENT_KEY_SET   = 1,  
+    EVENT_KEY_POWER,  
+    EVENT_KEY_UP   ,  
+    EVENT_KEY_DOWN ,  
+    EVENT_KEY_OPEN ,  
+    EVENT_KEY_CLOSE,  
+    EVENT_LIMIT_HEAT_ON,
+    EVENT_LIMIT_COOL_ON,
+    EVENT_TYPE_END,
+};
 
-
+#endif
