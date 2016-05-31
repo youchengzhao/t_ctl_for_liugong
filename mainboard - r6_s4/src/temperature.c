@@ -16,7 +16,13 @@ static unsigned int speed_old_ = 0;
 static unsigned int speed_new_ = 0;
 static unsigned int temperature_value_ = 0;
 static unsigned char increment_ = 0; //增量
+static unsigned char temperature_flag;
 
+
+unsigned char getIcrement(void)
+{
+    return increment_;
+}
 
 //----------------------------ds18b20 driver-----------------------
 static char initIC18b20()
@@ -177,7 +183,7 @@ unsigned int doConvert()
     }
 }
 
-void calculatSeep(void)
+void calculatSpeed(void)
 {
    if(temperature_value_old_ == 0;) 
        temperature_value_old_ = temperature_value_;
@@ -186,11 +192,36 @@ void calculatSeep(void)
 
    speed_old_ = speed_new_;
    if (temperature_value_new_ > temperature_value_old_)
+   {
        speed_new_ = temperature_value_new_ - temperature_value_old_;
+       if (speed_new_ > 0 )
+       {
+          temperature_flag = TEMPERATURE_FLAG_UP;  
+       }
+   }
    else
+   {
        speed_new_ =  temperature_value_old_ - temperature_value_new_;
-
-
+       if (speed_new_ > 0 )
+       {
+          temperature_flag = TEMPERATURE_FLAG_DOWN;  
+       }
+   }
+   if(speed_new_ >= TEMPERATURE_MIN_SPACE )
+   {
+       if (speed_new_ < TEMPERATURE_MAX_SPACE)
+       {
+           increment_ = speed_new_* INCREMENT_BASE;
+       }
+       else
+       {
+           increment_ =  INCREMENT_MAX;
+       }
+   }
+   else
+   {
+      increment_ = 0; 
+   }
 }
 
 
