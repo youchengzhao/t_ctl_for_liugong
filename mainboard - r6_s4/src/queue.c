@@ -1,6 +1,7 @@
 #include "queue.h"
 
 
+
 char queue_init(struct queue_type * p)
 {
   p->queue_flag = QUEUE_NULL;
